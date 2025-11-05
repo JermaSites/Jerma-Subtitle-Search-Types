@@ -1,0 +1,91 @@
+name: Publish to registries
+run-name: Publish ${{ github.ref_name }}
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check remote
+        id: check_remote
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          if npm view "jerma-subtitle-search-types@${VERSION}" >/dev/null 2>&1; then
+            echo "exists=true" > $GITHUB_OUTPUT
+            echo "Version ${VERSION} of jerma-subtitle-search-types is already published to npm. Skipping."
+          else
+            echo "exists=false" > $GITHUB_OUTPUT
+            echo "Version ${VERSION} of jerma-subtitle-search-types is not published yet."
+          fi
+
+      - name: Checkout
+        if: steps.check_remote.outputs.exists == 'false'
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup node
+        if: steps.check_remote.outputs.exists == 'false'
+        uses: actions/setup-node@v6.0.0
+        with:
+          node-version: '*'
+          registry-url: https://registry.npmjs.org
+
+      # Ensure npm 11.5.1 or later is installed to enable trusted publishing
+      # https://docs.npmjs.com/trusted-publishers
+      - name: Update npm
+        if: steps.check_remote.outputs.exists == 'false'
+        run: npm install -g npm@latest
+
+      - name: Publish
+        if: steps.check_remote.outputs.exists == 'false'
+        run: npm publish
+  github-packages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check remote
+        id: check_remote
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          if npm view "@bergbok/jerma-subtitle-search-types@${VERSION}" --registry https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "exists=true" > $GITHUB_OUTPUT
+            echo "Version ${VERSION} of jerma-subtitle-search-types is already published to GitHub Packages. Skipping."
+          else
+            echo "exists=false" > $GITHUB_OUTPUT
+            echo "Version ${VERSION} of jerma-subtitle-search-types is not published yet."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        if: steps.check_remote.outputs.exists == 'false'
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup node
+        if: steps.check_remote.outputs.exists == 'false'
+        uses: actions/setup-node@v6.0.0
+        with:
+          node-version: '*'
+          registry-url: https://npm.pkg.github.com
+
+      - name: Publish
+        if: steps.check_remote.outputs.exists == 'false'
+        run: |
+          npm config set registry=https://npm.pkg.github.com
+          npm pkg set name="@bergbok/jerma-subtitle-search-types"
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
