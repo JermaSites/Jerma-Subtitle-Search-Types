@@ -1,0 +1,32 @@
+{
+	"name": "jerma-subtitle-search-types",
+	"version": "1.0.0",
+	"author": {
+		"name": "Bergbok",
+		"url": "https://github.com/Bergbok"
+	},
+	"repository": "github:Jerma-Sites/Jerma-Subtitle-Search-Types",
+	"description": "Types shared between search.jerma.io's client and server",
+	"license": "ISC",
+	"type": "module",
+	"types": "jer,a.d.ts",
+	"prettier": "@bergbok/prettier-config",
+	"files": [
+		"jer,a.d.ts"
+	],
+	"simple-git-hooks": {
+		"pre-commit": "bun pretty-quick --staged"
+	},
+	"scripts": {
+		"prettier": "prettier --write ."
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"devDependencies": {
+		"@bergbok/prettier-config": "^1.1.0",
+		"prettier": "^3.6.2",
+		"pretty-quick": "^4.2.2",
+		"simple-git-hooks": "^2.13.1"
+	}
+}
