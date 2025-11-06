@@ -5,8 +5,14 @@
 		"name": "Bergbok",
 		"url": "https://github.com/Bergbok"
 	},
-	"repository": "github:Jerma-Sites/Jerma-Subtitle-Search-Types",
+	"homepage": "https://search.jerma.io",
+	"repository": "github:JermaSites/Jerma-Subtitle-Search-Types",
 	"description": "Types shared between search.jerma.io's client and server",
+	"keywords": [
+		"jerma",
+		"typescript",
+		"types"
+	],
 	"license": "ISC",
 	"type": "module",
 	"types": "jer,a.d.ts",
