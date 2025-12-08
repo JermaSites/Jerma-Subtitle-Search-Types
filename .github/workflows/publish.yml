@@ -32,7 +32,7 @@ jobs:
 
       - name: Checkout
         if: steps.check_remote.outputs.exists == 'false'
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
 
       - name: Setup node
         if: steps.check_remote.outputs.exists == 'false'
@@ -72,7 +72,7 @@ jobs:
 
       - name: Checkout
         if: steps.check_remote.outputs.exists == 'false'
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
 
       - name: Setup node
         if: steps.check_remote.outputs.exists == 'false'
