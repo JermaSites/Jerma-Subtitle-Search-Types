@@ -27,7 +27,7 @@
 		"prettier": "prettier --write ."
 	},
 	"peerDependencies": {
-		"typescript": "^5"
+		"typescript": ">=5.0.0"
 	},
 	"devDependencies": {
 		"@bergbok/prettier-config": "^1.1.0",
